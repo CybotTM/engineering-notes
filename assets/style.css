@@ -1,0 +1,497 @@
+/* =========================================================================
+   Engineering Notes — screen + print
+   Body: Source Serif 4 (variable), self-hosted
+   UI/headings: Inter (variable), self-hosted
+   Forked from cybottm.github.io/cv with shared visual identity (warm
+   off-white, deep wine accent, editorial serif/Inter pairing) so a reader
+   moving between the two sites recognises the same author.
+   ========================================================================= */
+
+@font-face {
+  font-family: "Source Serif 4 Variable";
+  src: url("fonts/SourceSerif4-Variable.woff2") format("woff2-variations"),
+       url("fonts/SourceSerif4-Variable.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: optional;
+}
+@font-face {
+  font-family: "Source Serif 4 Variable";
+  src: url("fonts/SourceSerif4-Variable-Italic.woff2") format("woff2-variations"),
+       url("fonts/SourceSerif4-Variable-Italic.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: optional;
+}
+@font-face {
+  font-family: "Inter Variable";
+  src: url("fonts/Inter-Variable.woff2") format("woff2-variations"),
+       url("fonts/Inter-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: optional;
+}
+@font-face {
+  font-family: "Inter Variable";
+  src: url("fonts/Inter-Variable-Italic.woff2") format("woff2-variations"),
+       url("fonts/Inter-Variable-Italic.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: optional;
+}
+
+/* -------- Tokens -------- */
+
+:root {
+  --serif: "Source Serif 4 Variable", ui-serif, Charter, "Iowan Old Style",
+           Cambria, Georgia, serif;
+  --sans:  "Inter Variable", system-ui, -apple-system, "Segoe UI",
+           Roboto, "Helvetica Neue", sans-serif;
+
+  --color-page:    #fbfaf6;
+  --color-text:    #1a1a1a;     /* 16.7:1 on page (AAA 1.4.6) */
+  --color-muted:   #4d4d4d;     /*  8.1:1 on page (AAA 1.4.6) — was #5a5a5a (6.86:1, AA only) */
+  --color-accent:  #7d2d3a;     /* 10.7:1 on page (AAA 1.4.6) */
+  --color-rule:    rgba(0, 0, 0, 0.10);
+  --color-rule-bold: rgba(0, 0, 0, 0.18);
+  --color-link-underline: rgba(125, 45, 58, 0.45);
+
+  --measure: 36em;
+
+  --fs-base:  18px;
+  --fs-h1:    clamp(2rem, 4.5vw, 2.6rem);
+  --fs-h2:    0.92rem;
+  --fs-h3:    1.1rem;
+  --fs-kicker:0.75rem;
+  --fs-small: 0.85rem;
+}
+
+/* -------- Reset-ish -------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-size: var(--fs-base);
+  background: var(--color-page);
+  color: var(--color-text);
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  font-family: var(--serif);
+  line-height: 1.62;
+  font-feature-settings: "kern", "liga", "onum";
+  font-variant-numeric: oldstyle-nums proportional-nums;
+}
+
+.skip-link {
+  position: absolute;
+  inset: auto auto auto -1000px;
+  background: var(--color-text);
+  color: var(--color-page);
+  padding: 0.6rem 1rem;
+  text-decoration: none;
+  border-radius: 0 0 4px 0;
+  z-index: 1000;
+}
+.skip-link:focus {
+  inset: 0 auto auto 0;
+}
+
+/* -------- Article shell -------- */
+
+.page {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 4rem 1.5rem 3rem;
+}
+
+@media (min-width: 48em) {
+  .page {
+    padding: 5rem 2rem 4rem;
+  }
+}
+
+/* -------- Header -------- */
+
+.page-header {
+  margin-bottom: 2.4rem;
+}
+
+.kicker {
+  font-family: var(--sans);
+  font-size: var(--fs-kicker);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin: 0 0 0.6rem;
+}
+
+.page-header h1 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: var(--fs-h1);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.35rem;
+}
+
+.page-header .role {
+  font-family: var(--sans);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0 0 0.15rem;
+}
+
+.page-header .location {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: var(--color-muted);
+  margin: 0 0 1.25rem;
+}
+
+.meta-nav {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-rule);
+}
+
+.meta-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  /* tight gap, since each link's padding contributes to spacing */
+  gap: 0 0.4rem;
+  font-family: var(--sans);
+  font-size: var(--fs-small);
+}
+
+/* WCAG 2.5.5 AAA Target Size (44 CSS px). At fs-small (0.85rem ≈ 15.3 px)
+   with line-height 1.62, the inline-block hit area is 0.55rem × 2 padding
+   plus a ~24.8 px line box → ~44.6 px tall; horizontal padding plus the
+   reduced container gap puts the hit area comfortably above 44 px wide. */
+.meta-links a {
+  display: inline-block;
+  padding: 0.55rem 0.4rem;
+  border-radius: 4px;
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-color: var(--color-link-underline);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+.meta-links a[aria-current="page"] {
+  color: var(--color-accent);
+  font-weight: 600;
+  text-decoration-color: currentColor;
+}
+
+/* -------- Body -------- */
+
+.prose h2 {
+  font-family: var(--sans);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin: 2.6rem 0 1rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--color-rule-bold);
+}
+
+.prose h3 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: var(--fs-h3);
+  margin: 1.4rem 0 0.2rem;
+  letter-spacing: -0.005em;
+}
+
+.prose h4 {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin: 1rem 0 0.3rem;
+  color: var(--color-muted);
+  letter-spacing: 0.04em;
+}
+
+.prose p { margin: 0.6rem 0; }
+.prose p strong { font-weight: 600; }
+
+.prose ul,
+.prose ol {
+  padding-left: 1.2rem;
+  margin: 0.6rem 0 0.9rem;
+}
+.prose li { margin: 0.25rem 0; }
+.prose ul li::marker { color: var(--color-accent); }
+
+.prose a {
+  color: var(--color-text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-link-underline);
+  padding-bottom: 1px;
+}
+.prose a:hover,
+.prose a:focus {
+  background: rgba(125, 45, 58, 0.07);
+  border-bottom-color: var(--color-accent);
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--color-rule);
+  margin: 2rem 0;
+}
+
+.prose em { font-style: italic; }
+
+.prose code {
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Consolas, monospace;
+  font-size: 0.9em;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+/* -------- Footer -------- */
+
+.page-footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-rule);
+  font-family: var(--sans);
+  font-size: var(--fs-small);
+  color: var(--color-muted);
+}
+.page-footer a {
+  color: var(--color-muted);
+  border-bottom: 1px dotted var(--color-rule-bold);
+  text-decoration: none;
+}
+
+/* -------- Essay-specific: header meta line -------- */
+
+.essay-meta {
+  font-family: var(--sans);
+  font-size: var(--fs-small);
+  color: var(--color-muted);
+  margin: 0.4rem 0 1.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.6rem;
+}
+
+.essay-meta time { font-variant-numeric: tabular-nums; }
+
+/* Status pills surface non-current state. Default ('current') renders no
+   pill — clean masthead. Other statuses get a small Inter chip. */
+.status-pill {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+.status-revised   { color: var(--color-accent); }
+.status-archived  { color: var(--color-muted); font-style: italic; }
+.status-historical{ color: #6a4f1d; border-color: #6a4f1d; }
+
+/* -------- Topic chips (essay tags) -------- */
+
+.topic-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 1.6rem 0 0;
+}
+.topic-chips li { margin: 0; }
+.topic-chips a {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--color-rule-bold);
+  border-radius: 999px;
+  text-decoration: none;
+}
+.topic-chips a:hover,
+.topic-chips a:focus-visible {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+/* -------- Breadcrumb -------- */
+
+.breadcrumb {
+  font-family: var(--sans);
+  font-size: var(--fs-small);
+  color: var(--color-muted);
+  margin: 0 0 1.2rem;
+}
+.breadcrumb ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.4rem;
+}
+.breadcrumb li::after {
+  content: "›";
+  margin-left: 0.4rem;
+  color: var(--color-rule-bold);
+}
+.breadcrumb li:last-child::after { content: ""; }
+.breadcrumb a {
+  color: var(--color-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--color-rule-bold);
+  text-underline-offset: 0.2em;
+}
+.breadcrumb [aria-current="page"] {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+/* -------- Index page: thesis + essay listing -------- */
+
+.thesis {
+  font-family: var(--serif);
+  font-size: 1.18rem;
+  line-height: 1.55;
+  margin: 0 0 0.9rem;
+}
+.thesis + .thesis {
+  font-size: 1.05rem;
+  color: var(--color-muted);
+  margin-bottom: 2.6rem;
+}
+
+.essay-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.essay-list > li {
+  padding: 1.6rem 0;
+  border-top: 1px solid var(--color-rule);
+}
+.essay-list > li:last-child {
+  border-bottom: 1px solid var(--color-rule);
+}
+.essay-card h3 {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.3rem;
+  letter-spacing: -0.005em;
+}
+.essay-card h3 a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-color: var(--color-link-underline);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+.essay-card h3 a:hover,
+.essay-card h3 a:focus-visible {
+  color: var(--color-accent);
+  text-decoration-color: var(--color-accent);
+}
+.essay-card p {
+  margin: 0.4rem 0;
+  font-family: var(--serif);
+}
+.essay-card .essay-meta { margin-top: 0.5rem; }
+.essay-card .topic-chips { margin-top: 0.6rem; }
+
+/* -------- Focus, accessibility -------- */
+
+a:focus-visible,
+.skip-link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-bottom-color: transparent;
+}
+
+/* -------- Print (A4) -------- */
+
+@page {
+  size: A4;
+  margin: 18mm 18mm 22mm 18mm;
+  @bottom-center {
+    content: counter(page) " / " counter(pages);
+    font-family: "Inter Variable", system-ui, sans-serif;
+    font-size: 9pt;
+    color: #5a5a5a;
+  }
+  @bottom-left {
+    content: "Sebastian Mendel — Engineering Notes";
+    font-family: "Inter Variable", system-ui, sans-serif;
+    font-size: 9pt;
+    color: #5a5a5a;
+  }
+}
+
+@media print {
+  html { font-size: 10.5pt; background: #fff; }
+  body { background: #fff; color: #000; }
+  .skip-link { display: none !important; }
+  .page { padding: 0; max-width: none; }
+  .page-header { margin-bottom: 1.2rem; }
+  .page-header h1 { font-size: 22pt; }
+  .page-header .role { font-size: 11pt; }
+  .page-header .location { margin-bottom: 0.4rem; }
+  .meta-nav { display: none; }
+  .page-footer { display: none; }
+
+  .prose h2 {
+    font-size: 9pt;
+    margin: 1.4rem 0 0.5rem;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  .prose h3 {
+    font-size: 11pt;
+    margin: 0.8rem 0 0.1rem;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  .prose h4 { font-size: 9.5pt; }
+  .prose p, .prose li { font-size: 10.5pt; }
+
+  .prose ul, .prose ol, .prose p { orphans: 3; widows: 3; }
+  .prose li { break-inside: avoid; page-break-inside: avoid; }
+
+  .prose a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    color: #5a5a5a;
+    font-size: 0.85em;
+  }
+  .prose a {
+    border-bottom: none;
+    color: #000;
+    text-decoration: none;
+  }
+}

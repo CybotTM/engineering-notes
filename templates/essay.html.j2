@@ -1,0 +1,51 @@
+{% extends "base.html.j2" %}
+{% block body %}
+{# <main> may not be a descendant of <article>, <aside>, <footer>, <header>,
+   or <nav> per the HTML spec. The CSS .page wrapper is a plain <div>. #}
+<div class="page">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="{{ home_url }}">Engineering Notes</a></li>
+      <li><a href="{{ index_url }}">Essays</a></li>
+      <li><span aria-current="page">{{ title }}</span></li>
+    </ol>
+  </nav>
+
+  <header class="page-header">
+    <p class="kicker">Essay · {{ originally_published }}{% if updated and updated != originally_published %} · aktualisiert {{ updated }}{% endif %}</p>
+    <h1>{{ title }}</h1>
+    <p class="essay-meta">
+      <time datetime="{{ originally_published }}">{{ originally_published }}</time>
+      {% if updated and updated != originally_published %}
+      <time datetime="{{ updated }}" aria-label="zuletzt aktualisiert">aktualisiert {{ updated }}</time>
+      {% endif %}
+      {% if status and status != "current" %}
+      <span class="status-pill status-{{ status }}">{{ status }}</span>
+      {% endif %}
+    </p>
+  </header>
+
+  <main id="main">
+    <article class="prose">
+      {{ body | safe }}
+    </article>
+  </main>
+
+  {% if topics %}
+  <ul class="topic-chips" aria-label="Themen">
+    {% for t in topics %}
+    <li><a href="{{ index_url }}#topic-{{ t }}" rel="tag">{{ t.replace('-', ' ') }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <footer class="page-footer">
+    <p>
+      <small>
+        Originally published {{ originally_published }}{% if updated and updated != originally_published %} · last updated {{ updated }}{% endif %} ·
+        <a href="{{ source_url }}">Source on GitHub</a>
+      </small>
+    </p>
+  </footer>
+</div>
+{% endblock %}

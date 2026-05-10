@@ -1,0 +1,27 @@
+# Build artifacts (regenerated in CI)
+public/
+
+# Local Python build env
+.venv/
+.venv-build/
+__pycache__/
+*.pyc
+
+# Lighthouse local reports
+lighthouse-*.html
+.lighthouseci/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Drafts + private
+src/*private*
+*.tmp
+*.bak

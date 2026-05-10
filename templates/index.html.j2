@@ -1,0 +1,54 @@
+{% extends "base.html.j2" %}
+{% block body %}
+<div class="page">
+  <header class="page-header">
+    <p class="kicker">Engineering Notes</p>
+    <h1>{{ author.name }}</h1>
+    <p class="role">Essays, field notes &amp; technical reflections</p>
+  </header>
+
+  <main id="main" class="prose">
+    {{ thesis | safe }}
+
+    <section aria-labelledby="essays-heading">
+      <h2 id="essays-heading">Essays</h2>
+      <ul class="essay-list">
+        {% for e in essays %}
+        <li>
+          <article class="essay-card">
+            <h3><a href="{{ e.url }}">{{ e.title }}</a></h3>
+            <p>{{ e.summary }}</p>
+            <p class="essay-meta">
+              <time datetime="{{ e.originally_published }}">{{ e.originally_published }}</time>
+              {% if e.updated and e.updated != e.originally_published %}
+              <time datetime="{{ e.updated }}" aria-label="zuletzt aktualisiert">aktualisiert {{ e.updated }}</time>
+              {% endif %}
+              {% if e.status and e.status != "current" %}
+              <span class="status-pill status-{{ e.status }}">{{ e.status }}</span>
+              {% endif %}
+            </p>
+            {% if e.topics %}
+            <ul class="topic-chips" aria-label="Themen">
+              {% for t in e.topics %}
+              <li><a href="#topic-{{ t }}" rel="tag">{{ t.replace('-', ' ') }}</a></li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </article>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <p>
+      <small>
+        Last build {{ build_iso }} ·
+        <a href="https://cybottm.github.io/cv/">CV</a> ·
+        <a href="https://github.com/CybotTM/engineering-notes">Source on GitHub</a>
+      </small>
+    </p>
+  </footer>
+</div>
+{% endblock %}

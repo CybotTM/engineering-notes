@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ description }}">
+  <meta name="author" content="{{ author.name }}">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#fbfaf6">
+  {% if canonical %}<link rel="canonical" href="{{ canonical }}">{% endif %}
+  <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+
+  {# Open Graph #}
+  <meta property="og:type" content="{{ og_type }}">
+  <meta property="og:title" content="{{ title }}">
+  <meta property="og:description" content="{{ description }}">
+  {% if canonical %}<meta property="og:url" content="{{ canonical }}">{% endif %}
+  <meta property="og:locale" content="{{ og_locale }}">
+  <meta property="og:site_name" content="Sebastian Mendel — Engineering Notes">
+
+  {# Twitter Card #}
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{{ title }}">
+  <meta name="twitter:description" content="{{ description }}">
+
+  {# Schema.org @graph — JSON-LD payload built per page in build.py #}
+  <script type="application/ld+json">{{ jsonld | safe }}</script>
+
+  {# Self-hosted variable fonts: preload only the regular roman on critical
+     path. Italic + Inter italic load from CSS without preload. #}
+  <link rel="preload" as="font" type="font/woff2"
+        href="{{ asset('fonts/SourceSerif4-Variable.woff2') }}" crossorigin>
+  <link rel="preload" as="font" type="font/woff2"
+        href="{{ asset('fonts/Inter-Variable.woff2') }}" crossorigin>
+
+  {# Inlined CSS to drop the render-blocking external request. assets/style.css
+     is also written to disk for direct linking (legacy consumers). #}
+  <style>{{ inline_css | safe }}</style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Direkt zum Inhalt springen</a>
+  {% block body %}{% endblock %}
+</body>
+</html>
