@@ -123,17 +123,24 @@ def render_md(body: str) -> str:
     return md.convert(body)
 
 
-def load_inline_css() -> str:
-    """Read assets/style.css, rewrite font URLs for inlining into HTML.
+def load_inline_css(font_url_prefix: str) -> str:
+    """Read assets/style.css and rewrite font URLs for inlining into HTML.
 
-    Same trick as the CV repo: source CSS references fonts as
-    `url("fonts/...")` (relative to the CSS file), but when inlined into
-    HTML via <style> the browser resolves them relative to the *HTML*.
-    Rewrite to `url("assets/fonts/...")` so the path matches the
-    <link rel=preload> hints (which are absolute relative to HTML).
+    The on-disk CSS at `assets/style.css` references fonts as
+    `url("fonts/...")` — relative to the CSS file. When that CSS is
+    *inlined* into an HTML page via <style>, the browser resolves
+    `url(...)` relative to the HTML page, not the CSS file. So the
+    rewrite has to match the HTML's depth on the site:
+
+      depth 0 (e.g. /index.html)             →  font_url_prefix = "assets/fonts/"
+      depth 1 (e.g. /essays/<slug>.html)     →  font_url_prefix = "../assets/fonts/"
+
+    The preload hints emitted by the template use the same prefix via the
+    `asset()` helper, so the preloaded font URL matches the @font-face
+    URL exactly and the preload is reused.
     """
     css = (ASSETS / "style.css").read_text(encoding="utf-8")
-    return re.sub(r'url\((\s*"?)fonts/', r'url(\1assets/fonts/', css)
+    return re.sub(r'url\((\s*"?)fonts/', rf'url(\1{font_url_prefix}', css)
 
 
 def load_abbreviations() -> str:
@@ -228,7 +235,7 @@ def essay_breadcrumb(essay: Essay) -> dict:
     }
 
 
-def render_essay(env: Environment, essay: Essay, abbr_block: str, inline_css: str) -> str:
+def render_essay(env: Environment, essay: Essay, abbr_block: str) -> str:
     front = essay.front
     body_md_with_abbr = essay.body_md + "\n\n" + abbr_block
     breadcrumb = essay_breadcrumb(essay)
@@ -252,13 +259,13 @@ def render_essay(env: Environment, essay: Essay, abbr_block: str, inline_css: st
         source_url=essay.source_url,
         home_url=f"{SITE_BASE}/",
         index_url=f"{SITE_BASE}/",
-        inline_css=inline_css,
+        inline_css=load_inline_css("../assets/fonts/"),
         asset=lambda p: f"../assets/{p}",
     )
 
 
 def render_index(env: Environment, essays: list[Essay], thesis_html: str,
-                 inline_css: str, build_iso: str) -> str:
+                 build_iso: str) -> str:
     jsonld = index_jsonld(essays)
     tpl = env.get_template("index.html.j2")
     return tpl.render(
@@ -289,7 +296,7 @@ def render_index(env: Environment, essays: list[Essay], thesis_html: str,
             for e in essays
         ],
         build_iso=build_iso,
-        inline_css=inline_css,
+        inline_css=load_inline_css("assets/fonts/"),
         asset=lambda p: f"assets/{p}",
     )
 
@@ -322,19 +329,18 @@ def main() -> int:
         lstrip_blocks=True,
     )
 
-    inline_css = load_inline_css()
     abbr_block = load_abbreviations()
     thesis_html = load_thesis_html()
     now = datetime.now(timezone.utc).replace(microsecond=0)
     build_iso = now.isoformat()
 
     for essay in essays:
-        html = render_essay(env, essay, abbr_block, inline_css)
+        html = render_essay(env, essay, abbr_block)
         out = PUBLIC / "essays" / f"{essay.slug}.html"
         out.write_text(html, encoding="utf-8")
         print(f"wrote {out.relative_to(ROOT)}")
 
-    index_html = render_index(env, essays, thesis_html, inline_css, build_iso)
+    index_html = render_index(env, essays, thesis_html, build_iso)
     (PUBLIC / "index.html").write_text(index_html, encoding="utf-8")
     print(f"wrote public/index.html ({len(essays)} essays)")
     return 0

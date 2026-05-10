@@ -440,6 +440,8 @@ Beispiele:
 
 Der schlechteste Weg ist oft: komplette Datei lesen und dann im Chat "verstehen".
 
+Wer das Werkzeug-Set systematisch aufbauen möchte, findet eine kuratierte und dokumentierte Auswahl unter [`netresearch/coding_agent_cli_toolset`](https://github.com/netresearch/coding_agent_cli_toolset) — ein installierbares Bündel der CLI-Tools, die Coding-Agents in der Praxis tatsächlich Tokens sparen.
+
 ### `/insights` und `/status` nutzen
 
 Fragt regelmäßig:
