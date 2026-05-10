@@ -442,6 +442,13 @@ Der schlechteste Weg ist oft: komplette Datei lesen und dann im Chat "verstehen"
 
 Wer das Werkzeug-Set systematisch aufbauen möchte, findet eine kuratierte und dokumentierte Auswahl unter [`netresearch/coding_agent_cli_toolset`](https://github.com/netresearch/coding_agent_cli_toolset) — ein installierbares Bündel der CLI-Tools, die Coding-Agents in der Praxis tatsächlich Tokens sparen.
 
+Zwei Claude-Skills operationalisieren denselben Gedanken auf Prompt-Ebene, damit Claude die passenden Tools selbstständig auswählt statt zum Default-`Read` zu greifen:
+
+- [`netresearch/file-search-skill`](https://github.com/netresearch/file-search-skill) — strukturierte Code- und Inhaltssuche (Serena-Symbol-Operationen, ripgrep-Pattern-Treffer, AST-Suche), damit Claude den gezielten Treffer holt statt der ganzen Datei.
+- [`netresearch/data-tools-skill`](https://github.com/netresearch/data-tools-skill) — Routinen für strukturierte Daten (`jq`, `yq`, `xmlstarlet`, Miller), damit JSON/YAML/XML/CSV gezielt abgefragt statt komplett in den Kontext gezogen werden.
+
+Die CLI-Tools liefern die Grundlage; die Skills liefern das Wissen, wann und wie Claude sie einsetzen soll.
+
 ### `/insights` und `/status` nutzen
 
 Fragt regelmäßig:
@@ -473,6 +480,8 @@ Am Session-Ende lohnt sich eine Mini-Retro:
 - Welche Skills fehlen noch?
 - Wo ist der Kontext unnötig gewachsen?
 - Was sollte als Skill-Verbesserung oder Memory-Regel persistiert werden?
+
+Wer diesen Retro-Loop systematisch betreiben statt nur sporadisch durchführen möchte, kann ihn mit [`netresearch/claude-coach-plugin`](https://github.com/netresearch/claude-coach-plugin) automatisieren — das Plugin sammelt Korrekturen, wiederkehrende Fehler und Tool-Failures während der Session und schlägt am Ende konkrete Skill- oder Memory-Regeln vor. Der Loop „Korrektur → persistierte Regel → bessere nächste Session" wird damit zu einem Teil des Workflows statt zu einer freiwilligen Disziplinübung.
 
 Ziel ist nicht Selbstbeschäftigung. Ziel ist, die nächste Session billiger und präziser zu machen.
 
