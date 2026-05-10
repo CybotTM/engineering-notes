@@ -4,7 +4,8 @@
       "staticDistDir": "./public",
       "url": [
         "http://localhost/index.html",
-        "http://localhost/essays/optimizing-claude-code-cache-read-inflation.html"
+        "http://localhost/essays/optimizing-claude-code-cache-read-inflation.html",
+        "http://localhost/essays/matrix-based-communication-platform.html"
       ],
       "settings": {
         "preset": "desktop",
