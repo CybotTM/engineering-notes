@@ -255,13 +255,95 @@ body {
 
 .prose em { font-style: italic; }
 
+/* Inline `<code>` — only when NOT inside a <pre>. */
 .prose code {
   font-family: ui-monospace, "SF Mono", "JetBrains Mono", Consolas, monospace;
   font-size: 0.9em;
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(0, 0, 0, 0.045);
   padding: 0.1em 0.3em;
   border-radius: 3px;
+  word-break: break-word;
 }
+
+/* Fenced code blocks: container is <pre>, child <code> resets the inline
+   tint/padding so we don't get a "background per line" look. */
+.prose pre {
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  background: #f3efe6;          /* warmer than the page (#fbfaf6) */
+  color: var(--color-text);
+  border: 1px solid var(--color-rule-bold);
+  border-radius: 6px;
+  padding: 0.95rem 1.1rem;
+  margin: 1.3rem 0;
+  overflow-x: auto;             /* horizontal scroll, no line wrap */
+  -webkit-overflow-scrolling: touch;
+  tab-size: 2;
+  font-variant-ligatures: none;
+}
+.prose pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  white-space: pre;
+  word-break: normal;
+}
+
+/* Tables — editorial: header row in Inter small caps, hairline row dividers,
+   tabular numerics for metric columns, horizontal scroll on overflow. */
+.prose table {
+  display: block;             /* enables overflow-x on the wrapper */
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 1.3rem 0;
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+}
+.prose table thead,
+.prose table tbody,
+.prose table tr { width: 100%; }
+.prose th,
+.prose td {
+  text-align: left;
+  padding: 0.55rem 0.85rem 0.55rem 0;
+  border-bottom: 1px solid var(--color-rule);
+  vertical-align: top;
+}
+.prose th:last-child,
+.prose td:last-child {
+  padding-right: 0;
+}
+.prose th {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  border-bottom: 2px solid var(--color-rule-bold);
+  padding-bottom: 0.5rem;
+}
+.prose tbody tr:last-child th,
+.prose tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Blockquotes — left rule in accent, italic, slightly muted. */
+.prose blockquote {
+  margin: 1.3rem 0;
+  padding: 0.2rem 0 0.2rem 1.1rem;
+  border-left: 3px solid var(--color-accent);
+  color: var(--color-muted);
+  font-style: italic;
+}
+.prose blockquote p:first-child { margin-top: 0; }
+.prose blockquote p:last-child { margin-bottom: 0; }
+.prose blockquote em { font-style: normal; }   /* avoid double-italic on nested em */
 
 /* -------- Footer -------- */
 
@@ -483,6 +565,16 @@ a:focus-visible,
 
   .prose ul, .prose ol, .prose p { orphans: 3; widows: 3; }
   .prose li { break-inside: avoid; page-break-inside: avoid; }
+
+  /* Code, tables, blockquotes — avoid splitting across pages where possible. */
+  .prose pre,
+  .prose table,
+  .prose blockquote {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .prose pre { font-size: 9pt; background: #f3efe6; }
+  .prose table { font-size: 9.5pt; }
 
   .prose a[href^="http"]::after {
     content: " (" attr(href) ")";
